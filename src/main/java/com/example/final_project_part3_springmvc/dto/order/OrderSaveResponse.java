@@ -6,7 +6,7 @@ import com.example.final_project_part3_springmvc.dto.subservices.SubServicesSave
 import java.time.LocalDate;
 
 public record OrderSaveResponse(long id,
-        CustomerSaveResponse customer,
+                                CustomerSaveResponse customer,
                                 SubServicesSaveResponse subServices,
                                 double customerOfferPrice,
                                 LocalDate requestedDateToDoOrder,
