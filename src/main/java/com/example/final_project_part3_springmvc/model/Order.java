@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,16 +37,19 @@ public class Order  {
     @NotNull
     private SubServices subServices;
     private double customerOfferPrice;
-    private double expertOfferPrice;
     private double finalPrice;
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
     @FutureOrPresent
-    private LocalDate orderRegisterDate;
+    private LocalDateTime orderRegisterDate;
     @FutureOrPresent
-    private LocalDate requestedDateToDoOrder;
+    private LocalDateTime requestedDateToDoOrder;
     @FutureOrPresent
-    private LocalDate toDoOrderDate;
+    private LocalDateTime startOrderDate;
+    @FutureOrPresent
+    private LocalDateTime endOrderDate;
+    @FutureOrPresent
+    private LocalDateTime endOrderDateOffer;
     private boolean doOrder;
     @Min(0)@Max(5)
     private int rate;
