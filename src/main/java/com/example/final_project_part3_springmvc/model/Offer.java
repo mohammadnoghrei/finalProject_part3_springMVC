@@ -1,4 +1,5 @@
 package com.example.final_project_part3_springmvc.model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -30,12 +32,13 @@ public class Offer  {
     private Expert expert;
     @Min(0)
     double price;
-    @FutureOrPresent
-//    LocalDate sendOfferDate;
 //    @FutureOrPresent
-//    LocalDate startOfferDate;
-//    @FutureOrPresent
-//    LocalDate endOfferDate;
+
+    LocalDateTime sendOfferDate;
+
+    LocalDateTime startOfferDate;
+
+    LocalDateTime endOfferDate;
     boolean confirmed;
 
 
