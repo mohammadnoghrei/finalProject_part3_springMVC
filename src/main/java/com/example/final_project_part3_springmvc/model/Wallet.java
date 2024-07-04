@@ -14,10 +14,14 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Wallet  {
+public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    private Person person;
+    private String cardNumber;
+    private String cvv;
+    private String month;
+    private String year;
+    private String password;
+    private double balance;
 }
