@@ -7,13 +7,16 @@ import jakarta.validation.ValidatorFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.Set;
 @Component
 public class Util {
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     Validator validator = validatorFactory.getValidator();
-
+   public static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
     public boolean validate(Objects entity) {
 
@@ -71,5 +74,18 @@ public class Util {
             }
         }
         return flag;
+    }
+
+    public  static int getHourDifferenceBetweenDates(LocalDateTime date1, LocalDateTime date2) {
+        long hoursDifference = ChronoUnit.HOURS.between(date1, date2);
+        return (int) hoursDifference;
+//todo check date diffrence calculate
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+//        LocalDateTime now = LocalDateTime.parse("2023/06/04 15:20:20",dtf);
+//        LocalDateTime now2 = LocalDateTime.parse("2023/06/04 16:08:20",dtf);
+//
+//        int hourDifference = getHourDifferenceBetweenDates(now, now2);
+//        System.out.println("Hour Difference: " + hourDifference);
+
     }
 }
