@@ -2,23 +2,31 @@ package com.example.final_project_part3_springmvc.service;
 
 import com.example.final_project_part3_springmvc.exception.InvalidEntityException;
 import com.example.final_project_part3_springmvc.exception.NotFoundException;
+import com.example.final_project_part3_springmvc.exception.StatusException;
 import com.example.final_project_part3_springmvc.model.Offer;
 import com.example.final_project_part3_springmvc.model.OrderStatus;
 import com.example.final_project_part3_springmvc.repository.OfferRepository;
+import com.example.final_project_part3_springmvc.utility.Util;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OfferService  {
     private final OfferRepository offerRepository;
     private final ExpertService expertService;
@@ -31,10 +39,9 @@ public class OfferService  {
         Set<ConstraintViolation<Offer>> violations = validator.validate(entity);
         if (violations.isEmpty())
             return true;
-        else {
-            System.out.println("Invalid user data found:");
+        else {log.warn("Invalid user data found:");
             for (ConstraintViolation<Offer> violation : violations) {
-                System.out.println(violation.getMessage());
+                log.warn(violation.getMessage());
             }
             return false;
         }
@@ -52,16 +59,24 @@ public class OfferService  {
         return allByOrder;
     }
 
-    public Offer saveOffer(Offer newOffer, long orderId, String expertUsername){
-        newOffer.setExpert(expertService.findByUsername(expertUsername));
-        newOffer.setOrder((orderService.findById(orderId)));
+    public Offer saveOffer(Offer newOffer){
+//       newOffer.setSendOfferDate(LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))));
+       newOffer.setSendOfferDate(LocalDateTime.now());
+       newOffer.setOrder(orderService.findById(newOffer.getOrder().getId()));
+       newOffer.setExpert(expertService.findById(newOffer.getExpert().getId()));
         if (!validate(newOffer))
             throw new InvalidEntityException("the offer entity have invalid variable");
+        if (newOffer.getOrder().getOrderStatus().equals(OrderStatus.START_SERVICE)||
+                newOffer.getOrder().getOrderStatus().equals(OrderStatus.DONE_SERVICE)||
+                newOffer.getOrder().getOrderStatus().equals(OrderStatus.PAID_SERVICE_PRICE) ||
+                newOffer.getOrder().getOrderStatus().equals(OrderStatus.WAITING_FOR_COMING_EXPERT_TO_YOUR_LOCATION))
+            throw new StatusException("the status of order is not valid");
         if (!newOffer.getOrder().getOrderStatus().equals(OrderStatus.WAITING_FOR_CHOOSE_EXPERT))
-            orderService.updateOrderStatusToWaitingForChooseExpert(orderId);
+            orderService.updateOrderStatusToWaitingForChooseExpert(newOffer.getOrder().getId());
         return offerRepository.save(newOffer);
     }
 
+    @Transactional
     public Offer confirmOffer(long offerId){
         Offer offer=findById(offerId);
         if (offer.isConfirmed())
