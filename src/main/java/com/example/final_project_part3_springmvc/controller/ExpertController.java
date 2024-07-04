@@ -1,8 +1,11 @@
 package com.example.final_project_part3_springmvc.controller;
 
+import com.example.final_project_part3_springmvc.dto.customer.CustomerSaveResponse;
 import com.example.final_project_part3_springmvc.dto.expert.ExpertSaveRequest;
 import com.example.final_project_part3_springmvc.dto.expert.ExpertSaveResponse;
+import com.example.final_project_part3_springmvc.mapper.CustomerMapper;
 import com.example.final_project_part3_springmvc.mapper.ExpertMapper;
+import com.example.final_project_part3_springmvc.model.Customer;
 import com.example.final_project_part3_springmvc.model.Expert;
 import com.example.final_project_part3_springmvc.model.ExpertStatus;
 import com.example.final_project_part3_springmvc.service.ExpertService;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,5 +65,14 @@ public class ExpertController {
         List<ExpertSaveResponse> expertSaveResponses= new ArrayList<>();
         experts.stream().forEach(a->expertSaveResponses.add(ExpertMapper.INSTANCE.modelToExpertSaveResponse(a)));
         return expertSaveResponses;
+    }
+    @GetMapping("search-expert")
+    public List<ExpertSaveResponse> searchExpert(@RequestParam(required = false) String firstname,
+                                                     @RequestParam(required = false) String lastname,
+                                                     @RequestParam(required = false) String email,
+                                                     @RequestParam(required = false) int rate){
+        List<Expert> experts =expertService.expertSearch(firstname,lastname,email,rate);
+        return experts.stream()
+                .map(ExpertMapper.INSTANCE::modelToExpertSaveResponse).collect(Collectors.toList());
     }
 }

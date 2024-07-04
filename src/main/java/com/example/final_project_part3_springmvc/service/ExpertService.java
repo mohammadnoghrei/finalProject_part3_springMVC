@@ -2,10 +2,13 @@ package com.example.final_project_part3_springmvc.service;
 
 
 import com.example.final_project_part3_springmvc.exception.*;
+import com.example.final_project_part3_springmvc.model.Customer;
 import com.example.final_project_part3_springmvc.model.Expert;
 import com.example.final_project_part3_springmvc.model.ExpertStatus;
 import com.example.final_project_part3_springmvc.repository.ExpertRepository;
 
+import com.example.final_project_part3_springmvc.specifications.CustomerSpecifications;
+import com.example.final_project_part3_springmvc.specifications.ExpertSpecifications;
 import com.example.final_project_part3_springmvc.utility.Util;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
@@ -14,6 +17,8 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,6 +57,13 @@ public class ExpertService {
         else if (!validate(expert)) {
             throw new InvalidEntityException(String.format("the customer with %s have invalid variable",expert.getUsername()));
         }else return expertRepository.save(expert);
+    }
+
+    public Expert updateExpert(Expert expert){
+        findById(expert.getId());
+        if (!validate(expert)) {
+            throw new InvalidEntityException(String.format("the customer with %s have invalid variable",expert.getUsername()));
+        }return expertRepository.save(expert);
     }
 
     public Expert findById(Long id){
@@ -96,6 +108,11 @@ public class ExpertService {
         if (score<0)
             throw new InvalidEntityException(String.format("the Expert with %s have invalid variable",username));
         expertRepository.updateScore(score,username);
+    }
+
+    public List<Expert> expertSearch(String firstname, String lastname, String email,int rate){
+        Specification<Expert> specification= ExpertSpecifications.getExpertSpecification(firstname,lastname,email,rate);
+        return expertRepository.findAll( specification);
     }
 
 }
