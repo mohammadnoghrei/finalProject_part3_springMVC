@@ -5,7 +5,9 @@ import com.example.final_project_part3_springmvc.exception.InvalidEntityExceptio
 import com.example.final_project_part3_springmvc.exception.NotFoundException;
 import com.example.final_project_part3_springmvc.exception.NotValidPasswordException;
 import com.example.final_project_part3_springmvc.model.Customer;
+import com.example.final_project_part3_springmvc.model.Expert;
 import com.example.final_project_part3_springmvc.repository.CustomerRepository;
+import com.example.final_project_part3_springmvc.specifications.CustomerSpecifications;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -13,9 +15,12 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 @Slf4j
 @Service
@@ -60,7 +65,12 @@ public class CustomerService {
         }
         return customerRepository.save(customer);
     }
-
+    public Customer updateCustomer(Customer customer){
+        findById(customer.getId());
+        if (!validate(customer)) {
+            throw new InvalidEntityException(String.format("the customer with %s have invalid variable",customer.getUsername()));
+        }return customerRepository.save(customer);
+    }
 
     public void deleteByUsername(String username) {
         customerRepository.delete(findByUsername(username));
@@ -78,6 +88,11 @@ public class CustomerService {
         } else {
             customerRepository.updatePassword(finalNewPassword, username);
         }
+    }
+
+    public List<Customer> customerSearch(String firstname,String lastname,String email){
+        Specification<Customer> specification= CustomerSpecifications.getCustomerSpecification(firstname,lastname,email);
+        return customerRepository.findAll(specification);
     }
 
 }

@@ -5,13 +5,14 @@ package com.example.final_project_part3_springmvc.repository;
 
 import com.example.final_project_part3_springmvc.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer,Long> {
+public interface CustomerRepository extends JpaRepository<Customer,Long>,JpaSpecificationExecutor{
     Optional<Customer> findByUsername(String username);
 
     @Modifying()
