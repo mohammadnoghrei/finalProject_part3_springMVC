@@ -40,15 +40,15 @@ public class Order  {
     private double finalPrice;
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
-    @FutureOrPresent
+//    @FutureOrPresent
     private LocalDateTime orderRegisterDate;
-    @FutureOrPresent
+//    @FutureOrPresent
     private LocalDateTime requestedDateToDoOrder;
-    @FutureOrPresent
+//    @FutureOrPresent
     private LocalDateTime startOrderDate;
-    @FutureOrPresent
+//    @FutureOrPresent
     private LocalDateTime endOrderDate;
-    @FutureOrPresent
+//    @FutureOrPresent
     private LocalDateTime endOrderDateOffer;
     private boolean doOrder;
     @Min(0)@Max(5)

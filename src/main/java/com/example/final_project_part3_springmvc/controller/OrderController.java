@@ -62,4 +62,10 @@ public class OrderController {
         return OrderMapper.INSTANCE.modelToOrderSaveResponse(order);
 
     }
+
+    @PostMapping("/payment-card-balance")
+    public String paymentWithCardBalance(@RequestParam long id){
+        orderService.orderPaymentWithCardBalance(id);
+        return "paid order";
+    }
 }
