@@ -6,7 +6,6 @@ import com.example.final_project_part3_springmvc.exception.StatusException;
 import com.example.final_project_part3_springmvc.model.Offer;
 import com.example.final_project_part3_springmvc.model.OrderStatus;
 import com.example.final_project_part3_springmvc.repository.OfferRepository;
-import com.example.final_project_part3_springmvc.utility.Util;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -16,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;

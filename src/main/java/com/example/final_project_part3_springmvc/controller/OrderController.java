@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/order")
 public class OrderController {
     private final OrderService orderService;
 
@@ -37,7 +38,7 @@ public class OrderController {
     public List<OrderSaveResponse> findAllOrderBySubService(@PathVariable String subService) {
         List<Order> orderList = orderService.findAllOrderByExpertSubService(subService);
         List<OrderSaveResponse> orderSaveResponses= new ArrayList<>();
-        orderList.stream().forEach(a->orderSaveResponses.add(OrderMapper.INSTANCE.modelToOrderSaveResponse(a)));
+        orderList.forEach(a->orderSaveResponses.add(OrderMapper.INSTANCE.modelToOrderSaveResponse(a)));
         return orderSaveResponses;
     }
 

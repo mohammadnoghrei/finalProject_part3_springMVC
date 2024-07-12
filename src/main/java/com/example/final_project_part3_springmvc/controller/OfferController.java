@@ -2,12 +2,8 @@ package com.example.final_project_part3_springmvc.controller;
 
 import com.example.final_project_part3_springmvc.dto.offer.OfferSaveRequest;
 import com.example.final_project_part3_springmvc.dto.offer.OfferSaveResponse;
-import com.example.final_project_part3_springmvc.dto.order.OrderSaveRequest;
-import com.example.final_project_part3_springmvc.dto.order.OrderSaveResponse;
 import com.example.final_project_part3_springmvc.mapper.OfferMapper;
-import com.example.final_project_part3_springmvc.mapper.OrderMapper;
 import com.example.final_project_part3_springmvc.model.Offer;
-import com.example.final_project_part3_springmvc.model.Order;
 import com.example.final_project_part3_springmvc.service.OfferService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/offer")
 public class OfferController {
     private final OfferService offerService;
 
@@ -41,7 +38,7 @@ public class OfferController {
     public List<OfferSaveResponse> findAllOfferByOrder(@PathVariable long id ) {
         List<Offer> offers = offerService.findAllOfferByOrder(id);
         List<OfferSaveResponse> offerSaveResponses= new ArrayList<>();
-        offers.stream().forEach(a->offerSaveResponses.add(OfferMapper.INSTANCE.modelToOfferSaveResponse(a)));
+        offers.forEach(a->offerSaveResponses.add(OfferMapper.INSTANCE.modelToOfferSaveResponse(a)));
         return offerSaveResponses;
     }
 
