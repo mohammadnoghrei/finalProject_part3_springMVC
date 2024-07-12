@@ -1,9 +1,7 @@
 package com.example.final_project_part3_springmvc.controller;
 
-import com.example.final_project_part3_springmvc.dto.subservices.SubServicesSaveResponse;
 import com.example.final_project_part3_springmvc.dto.subservicesexpert.SubServiceExpertSaveResponse;
 import com.example.final_project_part3_springmvc.mapper.SubServiceExpertMapper;
-import com.example.final_project_part3_springmvc.mapper.SubServicesMapper;
 import com.example.final_project_part3_springmvc.model.SubServiceExpert;
 import com.example.final_project_part3_springmvc.service.SubServiceExpertService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/subServicesExpert")
 public class SubServiceExpertController {
     private final SubServiceExpertService subServiceExpertService;
 

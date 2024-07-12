@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/subService")
 public class SubServicesController {
     private final SubServicesService subServicesService;
 
