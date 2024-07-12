@@ -1,11 +1,8 @@
 package com.example.final_project_part3_springmvc.controller;
 
-import com.example.final_project_part3_springmvc.dto.customer.CustomerSaveResponse;
 import com.example.final_project_part3_springmvc.dto.expert.ExpertSaveRequest;
 import com.example.final_project_part3_springmvc.dto.expert.ExpertSaveResponse;
-import com.example.final_project_part3_springmvc.mapper.CustomerMapper;
 import com.example.final_project_part3_springmvc.mapper.ExpertMapper;
-import com.example.final_project_part3_springmvc.model.Customer;
 import com.example.final_project_part3_springmvc.model.Expert;
 import com.example.final_project_part3_springmvc.model.ExpertStatus;
 import com.example.final_project_part3_springmvc.service.ExpertService;
@@ -22,13 +19,14 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/expert")
 public class ExpertController {
     private final ExpertService expertService;
 
-    @PostMapping("/register-expert/{path}")
-    public ResponseEntity<ExpertSaveResponse> registerExpert(@RequestBody ExpertSaveRequest request, @PathVariable String path) {
+    @PostMapping("/register-expert")
+    public ResponseEntity<ExpertSaveResponse> registerExpert(@RequestBody ExpertSaveRequest request) {
         Expert mappedExpert = ExpertMapper.INSTANCE.expertSaveRequestToModel(request);
-        Expert savedExpert = expertService.registerExpert(mappedExpert, path);
+        Expert savedExpert = expertService.registerExpert(mappedExpert);
         return new ResponseEntity<>(ExpertMapper.INSTANCE.modelToExpertSaveResponse(savedExpert), HttpStatus.CREATED);
     }
 
