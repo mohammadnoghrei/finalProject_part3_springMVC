@@ -1,5 +1,7 @@
 package com.example.final_project_part3_springmvc.service;
 
+import com.example.final_project_part3_springmvc.exception.NotFoundException;
+import com.example.final_project_part3_springmvc.model.Customer;
 import com.example.final_project_part3_springmvc.model.Person;
 import com.example.final_project_part3_springmvc.repository.PersonRepository;
 import jakarta.validation.ConstraintViolation;
@@ -9,6 +11,7 @@ import jakarta.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -30,5 +33,12 @@ public class PersonService  {
             }
             return false;
         }
+    }
+
+    public Optional<Person> findByUsername(String username) {
+        return personRepository.findByUsername(username);
+    }
+    public int enablePerson(String userName) {
+        return personRepository.enablePerson(userName);
     }
 }
