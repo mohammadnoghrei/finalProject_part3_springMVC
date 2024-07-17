@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,12 +37,12 @@ public class Person implements UserDetails {
     private String username;
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
     private String password;
-    @Column(unique = true, nullable = false)
+//    @Column(unique = true, nullable = false)
 //    @ValidationCode
     private String nationCode;
     @Pattern(regexp = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
     private String email;
-    private LocalDate registerDate;
+    private LocalDateTime registerDate;
 
     @Enumerated(EnumType.STRING)
     private Role role;
