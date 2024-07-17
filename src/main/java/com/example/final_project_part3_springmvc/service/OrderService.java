@@ -1,10 +1,14 @@
 package com.example.final_project_part3_springmvc.service;
 
+import com.example.final_project_part3_springmvc.dto.order.OrderCriteriaDto;
 import com.example.final_project_part3_springmvc.exception.InvalidEntityException;
 import com.example.final_project_part3_springmvc.exception.NotFoundException;
 import com.example.final_project_part3_springmvc.exception.StatusException;
 import com.example.final_project_part3_springmvc.model.*;
 import com.example.final_project_part3_springmvc.repository.OrderRepository;
+import com.example.final_project_part3_springmvc.specifications.CustomerSpecifications;
+import com.example.final_project_part3_springmvc.specifications.ExpertSpecifications;
+import com.example.final_project_part3_springmvc.specifications.OrderSpecifications;
 import com.example.final_project_part3_springmvc.utility.Util;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
@@ -12,6 +16,8 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -50,7 +56,7 @@ public class OrderService {
        return orderRepository.findAllByOrderStatusOrOrderStatusAndSubServices(OrderStatus.WAITING_FOR_EXPERT_OFFER,OrderStatus.WAITING_FOR_CHOOSE_EXPERT,subServicesService.findBySubServiceName(subServiceName));
     }
     public Order saveOrder(Order order ){
-            order.setOrderRegisterDate(LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))));
+        order.setOrderRegisterDate(LocalDateTime.now());
             order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER);
      if (order.getSubServices().getBasePrice()>order.getCustomerOfferPrice())
          throw new InvalidEntityException("the order entity have invalid price variable");
@@ -120,6 +126,13 @@ public class OrderService {
                 .average()
                 .orElse(0);
     }
+    public List<Order> findAllOrderByExpertAndOrderStatus(long expertId, OrderStatus orderStatus){
+        return orderRepository.findAllByExpertAndOrderStatus(expertService.findById(expertId),orderStatus);
+    }
+
+    public List<Order> findAllOrderByCustomerAndOrderStatus(long customerId, OrderStatus orderStatus){
+        return orderRepository.findAllByCustomerAndOrderStatus(customerService.findById(customerId),orderStatus);
+    }
 
     @Transactional
    public void orderPaymentWithCardBalance(long orderId){
@@ -163,4 +176,8 @@ public class OrderService {
            orderRepository.save(order);
        }
    }
+    public List<Order> orderSearch(OrderCriteriaDto orderCriteriaDto) {
+        Specification<Order> specification = OrderSpecifications.getOrderSpecification(orderCriteriaDto);
+        return orderRepository.findAll(specification);
+    }
 }
