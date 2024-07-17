@@ -33,6 +33,8 @@ public class Expert extends Person  {
     private List<SubServiceExpert>subServiceExperts=new ArrayList<>();
     @OneToMany (mappedBy = "expert",cascade = {CascadeType.PERSIST,CascadeType.REMOVE},fetch = FetchType.EAGER)
     private List<Offer>offerList=new ArrayList<>();
+    @OneToMany(mappedBy = "expert",cascade = {CascadeType.PERSIST,CascadeType.REMOVE},fetch = FetchType.EAGER)
+    private List<Order>orderList=new ArrayList<>();
     double cardBalance;
 
 
