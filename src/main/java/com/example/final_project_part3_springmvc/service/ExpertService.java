@@ -1,6 +1,7 @@
 package com.example.final_project_part3_springmvc.service;
 
 
+import com.example.final_project_part3_springmvc.dto.expert.ExpertCriteriaDto;
 import com.example.final_project_part3_springmvc.email.EmailSender;
 import com.example.final_project_part3_springmvc.exception.*;
 import com.example.final_project_part3_springmvc.model.ConfirmationToken;
@@ -9,7 +10,6 @@ import com.example.final_project_part3_springmvc.model.ExpertStatus;
 import com.example.final_project_part3_springmvc.model.Role;
 import com.example.final_project_part3_springmvc.repository.ExpertRepository;
 import com.example.final_project_part3_springmvc.specifications.ExpertSpecifications;
-import com.example.final_project_part3_springmvc.utility.Util;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -61,6 +62,7 @@ public class ExpertService {
     public Expert registerExpert(Expert expert) {
         expert.setExpertStatus(ExpertStatus.NEW);
         expert.setRole(Role.ROLE_EXPERT);
+        expert.setRegisterDate(LocalDateTime.now());
         if (expertRepository.findByUsername(expert.getUsername()).isPresent())
             throw new DuplicateInformationException(String.format("the expert with %s is duplicate", expert.getUsername()));
         if (!validate(expert))
@@ -124,9 +126,10 @@ public class ExpertService {
     public void confirmExpert(String username) {
         if (expertRepository.findByUsername(username).isEmpty())
             throw new NotFoundException(String.format("the entity with %s username not found", username));
-        else if (findByUsername(username).getExpertStatus().equals(ExpertStatus.CONFIRMED)) {
+        if (findByUsername(username).getExpertStatus().equals(ExpertStatus.CONFIRMED))
             throw new ConfirmationException(String.format("the entity with %s username was confirmed before your confirmation ", username));
-        }
+        if (findByUsername(username).getExpertStatus().equals(ExpertStatus.NEW))
+            throw new ConfirmationException(String.format("the entity with %s username must be WAITING_FOR_CONFIRMATION ", username));
         expertRepository.confirmExpert(ExpertStatus.CONFIRMED, username);
     }
 
@@ -139,8 +142,8 @@ public class ExpertService {
         expertRepository.updateScore(score, username);
     }
 
-    public List<Expert> expertSearch(String firstname, String lastname, String email, int rate) {
-        Specification<Expert> specification = ExpertSpecifications.getExpertSpecification(firstname, lastname, email, rate);
+    public List<Expert> expertSearch(ExpertCriteriaDto expertCriteriaDto) {
+        Specification<Expert> specification = ExpertSpecifications.getExpertSpecification(expertCriteriaDto);
         return expertRepository.findAll(specification);
     }
 
@@ -154,9 +157,7 @@ public class ExpertService {
         if (confirmationToken.getConfirmedAt() != null) {
             throw new ConfirmationException("email already confirmed");
         }
-
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
-
         if (expiredAt.isBefore(LocalDateTime.now())) {
             throw new ConfirmationException("token expired");
         }

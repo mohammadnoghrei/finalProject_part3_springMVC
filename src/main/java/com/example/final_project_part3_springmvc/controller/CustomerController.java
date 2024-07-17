@@ -1,5 +1,6 @@
 package com.example.final_project_part3_springmvc.controller;
 
+import com.example.final_project_part3_springmvc.dto.customer.CustomerCriteriaDto;
 import com.example.final_project_part3_springmvc.dto.customer.CustomerSaveRequest;
 import com.example.final_project_part3_springmvc.dto.customer.CustomerSaveResponse;
 import com.example.final_project_part3_springmvc.mapper.CustomerMapper;
@@ -50,14 +51,18 @@ public class CustomerController {
         return "change customer password with username: "+username;
     }
     @GetMapping("search-customer")
-    public List<CustomerSaveResponse> searchCustomer(@RequestParam(required = false) String firstname,
-                                                 @RequestParam(required = false) String lastname,
-                                                 @RequestParam(required = false) String email){
-        List<Customer> customers =customerService.customerSearch(firstname,lastname,email);
+    public List<CustomerSaveResponse> searchCustomer(@RequestBody CustomerCriteriaDto customerCriteriaDto){
+        List<Customer> customers =customerService.customerSearch(customerCriteriaDto);
         return customers.stream()
                 .map(CustomerMapper.INSTANCE::modelToCustomerSaveResponse).collect(Collectors.toList());
     }
 
+    @GetMapping("/find-customers-with-order-count/{count}")
+    public List<CustomerSaveResponse> findCustomersWithOrderCount(@PathVariable int count){
+        List<Customer> customers =customerService.findCustomersWithOrderCount(count);
+        return customers.stream()
+                .map(CustomerMapper.INSTANCE::modelToCustomerSaveResponse).collect(Collectors.toList());
+    }
     @GetMapping(path = "confirm")
     public String confirm(@RequestParam("token") String token) {
         return customerService.confirmToken(token);

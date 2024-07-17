@@ -1,7 +1,7 @@
 package com.example.final_project_part3_springmvc.service;
 
+import com.example.final_project_part3_springmvc.dto.customer.CustomerCriteriaDto;
 import com.example.final_project_part3_springmvc.email.EmailSender;
-import com.example.final_project_part3_springmvc.email.EmailService;
 import com.example.final_project_part3_springmvc.exception.*;
 import com.example.final_project_part3_springmvc.model.ConfirmationToken;
 import com.example.final_project_part3_springmvc.model.Customer;
@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +38,7 @@ public class CustomerService implements UserDetailsService {
     private final PersonService personService;
 
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-     Validator validator = validatorFactory.getValidator();
+    Validator validator = validatorFactory.getValidator();
 
 
     public boolean validate(Customer entity) {
@@ -67,7 +66,7 @@ public class CustomerService implements UserDetailsService {
     }
 
     public Customer registerCustomer(Customer customer) {
-        customer.setRegisterDate(LocalDate.now());
+        customer.setRegisterDate(LocalDateTime.now());
         customer.setRole(Role.ROLE_CUSTOMER);
         if (customerRepository.findByUsername(customer.getUsername()).isPresent())
             throw new DuplicateInformationException(String.format("the customer with %s is duplicate", customer.getUsername()));
@@ -119,9 +118,13 @@ public class CustomerService implements UserDetailsService {
         }
     }
 
-    public List<Customer> customerSearch(String firstname,String lastname,String email){
-        Specification<Customer> specification= CustomerSpecifications.getCustomerSpecification(firstname,lastname,email);
+    public List<Customer> customerSearch(CustomerCriteriaDto customerCriteriaDto){
+        Specification<Customer> specification= CustomerSpecifications.getCustomerSpecification(customerCriteriaDto);
         return customerRepository.findAll(specification);
+    }
+
+    public List<Customer> findCustomersWithOrderCount(int count){
+        return customerRepository.findCustomersWithOrderCount(count);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.final_project_part3_springmvc.controller;
 
+import com.example.final_project_part3_springmvc.dto.expert.ExpertCriteriaDto;
 import com.example.final_project_part3_springmvc.dto.expert.ExpertSaveRequest;
 import com.example.final_project_part3_springmvc.dto.expert.ExpertSaveResponse;
 import com.example.final_project_part3_springmvc.mapper.ExpertMapper;
@@ -61,16 +62,18 @@ public class ExpertController {
     public List<ExpertSaveResponse> findAllExpertByStatus(@PathVariable ExpertStatus status) {
         List<Expert> experts = expertService.findAllExpertByStatus(status);
         List<ExpertSaveResponse> expertSaveResponses= new ArrayList<>();
-        experts.stream().forEach(a->expertSaveResponses.add(ExpertMapper.INSTANCE.modelToExpertSaveResponse(a)));
+        experts.forEach(a->expertSaveResponses.add(ExpertMapper.INSTANCE.modelToExpertSaveResponse(a)));
         return expertSaveResponses;
     }
     @GetMapping("search-expert")
-    public List<ExpertSaveResponse> searchExpert(@RequestParam(required = false) String firstname,
-                                                     @RequestParam(required = false) String lastname,
-                                                     @RequestParam(required = false) String email,
-                                                     @RequestParam(required = false) int rate){
-        List<Expert> experts =expertService.expertSearch(firstname,lastname,email,rate);
+    public List<ExpertSaveResponse> searchExpert(@RequestBody ExpertCriteriaDto expertCriteriaDto){
+        List<Expert> experts =expertService.expertSearch(expertCriteriaDto);
         return experts.stream()
                 .map(ExpertMapper.INSTANCE::modelToExpertSaveResponse).collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "confirm")
+    public String confirm(@RequestParam("token") String token) {
+        return expertService.confirmToken(token);
     }
 }
