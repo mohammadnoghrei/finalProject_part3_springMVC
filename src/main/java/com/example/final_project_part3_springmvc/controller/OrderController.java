@@ -1,9 +1,14 @@
 package com.example.final_project_part3_springmvc.controller;
 
+import com.example.final_project_part3_springmvc.dto.expert.ExpertSaveResponse;
+import com.example.final_project_part3_springmvc.dto.order.OrderCriteriaDto;
 import com.example.final_project_part3_springmvc.dto.order.OrderSaveRequest;
 import com.example.final_project_part3_springmvc.dto.order.OrderSaveResponse;
+import com.example.final_project_part3_springmvc.mapper.ExpertMapper;
 import com.example.final_project_part3_springmvc.mapper.OrderMapper;
+import com.example.final_project_part3_springmvc.model.Expert;
 import com.example.final_project_part3_springmvc.model.Order;
+import com.example.final_project_part3_springmvc.model.OrderStatus;
 import com.example.final_project_part3_springmvc.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,5 +74,28 @@ public class OrderController {
     public String paymentWithCardBalance(@RequestParam long id){
         orderService.orderPaymentWithCardBalance(id);
         return "paid order";
+    }
+
+    @GetMapping("/find-by-expert-and-orderStatus/{id}/{status}")
+    public List<OrderSaveResponse> findAllByExpertAndOrderStatus(@PathVariable long id, @PathVariable String status){
+        List<Order> orderList = orderService.findAllOrderByExpertAndOrderStatus(id, OrderStatus.valueOf(status));
+        List<OrderSaveResponse> orderSaveResponses= new ArrayList<>();
+        orderList.forEach(a->orderSaveResponses.add(OrderMapper.INSTANCE.modelToOrderSaveResponse(a)));
+        return orderSaveResponses;
+    }
+
+    @GetMapping("/find-by-customer-and-orderStatus/{id}/{status}")
+    public List<OrderSaveResponse> findAllByCustomerAndOrderStatus(@PathVariable long id, @PathVariable String status){
+        List<Order> orderList = orderService.findAllOrderByCustomerAndOrderStatus(id, OrderStatus.valueOf(status));
+        List<OrderSaveResponse> orderSaveResponses= new ArrayList<>();
+        orderList.forEach(a->orderSaveResponses.add(OrderMapper.INSTANCE.modelToOrderSaveResponse(a)));
+        return orderSaveResponses;
+    }
+
+    @GetMapping("search-order")
+    public List<OrderSaveResponse> searchExpert(@RequestBody OrderCriteriaDto orderCriteriaDto){
+        List<Order> orders =orderService.orderSearch(orderCriteriaDto);
+        return orders.stream()
+                .map(OrderMapper.INSTANCE::modelToOrderSaveResponse).collect(Collectors.toList());
     }
 }
