@@ -1,12 +1,9 @@
 package com.example.final_project_part3_springmvc.controller;
 
-import com.example.final_project_part3_springmvc.dto.expert.ExpertSaveResponse;
 import com.example.final_project_part3_springmvc.dto.order.OrderCriteriaDto;
 import com.example.final_project_part3_springmvc.dto.order.OrderSaveRequest;
 import com.example.final_project_part3_springmvc.dto.order.OrderSaveResponse;
-import com.example.final_project_part3_springmvc.mapper.ExpertMapper;
 import com.example.final_project_part3_springmvc.mapper.OrderMapper;
-import com.example.final_project_part3_springmvc.model.Expert;
 import com.example.final_project_part3_springmvc.model.Order;
 import com.example.final_project_part3_springmvc.model.OrderStatus;
 import com.example.final_project_part3_springmvc.service.OrderService;
@@ -14,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -75,7 +73,7 @@ public class OrderController {
         orderService.orderPaymentWithCardBalance(id);
         return "paid order";
     }
-
+    @PreAuthorize("hasRole('ROLE_EXPERT')")
     @GetMapping("/find-by-expert-and-orderStatus/{id}/{status}")
     public List<OrderSaveResponse> findAllByExpertAndOrderStatus(@PathVariable long id, @PathVariable String status){
         List<Order> orderList = orderService.findAllOrderByExpertAndOrderStatus(id, OrderStatus.valueOf(status));
@@ -83,7 +81,7 @@ public class OrderController {
         orderList.forEach(a->orderSaveResponses.add(OrderMapper.INSTANCE.modelToOrderSaveResponse(a)));
         return orderSaveResponses;
     }
-
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping("/find-by-customer-and-orderStatus/{id}/{status}")
     public List<OrderSaveResponse> findAllByCustomerAndOrderStatus(@PathVariable long id, @PathVariable String status){
         List<Order> orderList = orderService.findAllOrderByCustomerAndOrderStatus(id, OrderStatus.valueOf(status));
@@ -91,7 +89,7 @@ public class OrderController {
         orderList.forEach(a->orderSaveResponses.add(OrderMapper.INSTANCE.modelToOrderSaveResponse(a)));
         return orderSaveResponses;
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("search-order")
     public List<OrderSaveResponse> searchExpert(@RequestBody OrderCriteriaDto orderCriteriaDto){
         List<Order> orders =orderService.orderSearch(orderCriteriaDto);

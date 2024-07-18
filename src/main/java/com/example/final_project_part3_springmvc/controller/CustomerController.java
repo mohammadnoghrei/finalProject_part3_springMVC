@@ -39,17 +39,20 @@ public class CustomerController {
     @GetMapping("/get-by-username-customer/{username}")
     public CustomerSaveResponse getCustomerByUsername(@PathVariable String username) {
         return CustomerMapper.INSTANCE.modelToCustomerSaveResponse(customerService.findByUsername(username));}
-
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @DeleteMapping("/delete-by-customer-username/{username}")
     public String deleteUser(@PathVariable String username){
         customerService.deleteByUsername(username);
         return "deleted customer with username:"+username;
     }
+
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @RequestMapping("/change-customer-password/{username}/{oldPassword}/{newPassword}/{finalNewPassword}")
     public String changeCustomerPassword(@PathVariable String username, @PathVariable String oldPassword,@PathVariable String newPassword, @PathVariable String finalNewPassword) {
         customerService.updatePassword(username,oldPassword,newPassword,finalNewPassword);
         return "change customer password with username: "+username;
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("search-customer")
     public List<CustomerSaveResponse> searchCustomer(@RequestBody CustomerCriteriaDto customerCriteriaDto){
         List<Customer> customers =customerService.customerSearch(customerCriteriaDto);

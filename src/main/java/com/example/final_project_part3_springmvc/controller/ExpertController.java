@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -65,6 +66,8 @@ public class ExpertController {
         experts.forEach(a->expertSaveResponses.add(ExpertMapper.INSTANCE.modelToExpertSaveResponse(a)));
         return expertSaveResponses;
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("search-expert")
     public List<ExpertSaveResponse> searchExpert(@RequestBody ExpertCriteriaDto expertCriteriaDto){
         List<Expert> experts =expertService.expertSearch(expertCriteriaDto);
