@@ -20,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +34,6 @@ public class ExpertService {
 
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
-    private final PersonService personService;
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     Validator validator = validatorFactory.getValidator();
 

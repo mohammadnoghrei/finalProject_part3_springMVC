@@ -6,8 +6,6 @@ import com.example.final_project_part3_springmvc.exception.NotFoundException;
 import com.example.final_project_part3_springmvc.exception.StatusException;
 import com.example.final_project_part3_springmvc.model.*;
 import com.example.final_project_part3_springmvc.repository.OrderRepository;
-import com.example.final_project_part3_springmvc.specifications.CustomerSpecifications;
-import com.example.final_project_part3_springmvc.specifications.ExpertSpecifications;
 import com.example.final_project_part3_springmvc.specifications.OrderSpecifications;
 import com.example.final_project_part3_springmvc.utility.Util;
 import jakarta.transaction.Transactional;
@@ -16,7 +14,6 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 

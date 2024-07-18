@@ -1,6 +1,5 @@
 package com.example.final_project_part3_springmvc.config;
 
-import com.example.final_project_part3_springmvc.exception.NotFoundException;
 import com.example.final_project_part3_springmvc.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -37,9 +35,6 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-//                        s -> s.requestMatchers(HttpMethod.GET, "/person").hasAnyRole("USER", "ADMIN")
-//                                .requestMatchers(HttpMethod.DELETE, "/person").hasRole("ADMIN")
-//                                .requestMatchers(HttpMethod.POST).permitAll()).httpBasic(Customizer.withDefaults());
                 s -> s.anyRequest().permitAll()).httpBasic(Customizer.withDefaults());
 
         return http.build();
@@ -48,7 +43,7 @@ public class SecurityConfiguration {
     @Autowired
     public void configureBuild(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(username -> (UserDetails) personService
+                .userDetailsService(username ->  personService
                         .findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("chom")))
                 .passwordEncoder(passwordEncoder);

@@ -1,7 +1,6 @@
 package com.example.final_project_part3_springmvc.service;
 
-import com.example.final_project_part3_springmvc.exception.NotFoundException;
-import com.example.final_project_part3_springmvc.model.Customer;
+
 import com.example.final_project_part3_springmvc.model.Person;
 import com.example.final_project_part3_springmvc.repository.PersonRepository;
 import jakarta.validation.ConstraintViolation;
